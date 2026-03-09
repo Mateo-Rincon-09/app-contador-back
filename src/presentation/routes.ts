@@ -6,7 +6,7 @@ export class AppRoutes {
     static get routes(): Router {
         const router = Router();
 
-        router.use('/api/auth', AuthRoutes.routes);
+        router.use('/auth', AuthRoutes.routes);
     
 
         return router;
