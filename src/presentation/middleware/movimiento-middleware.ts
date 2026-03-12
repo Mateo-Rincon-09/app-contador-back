@@ -6,7 +6,7 @@ interface JwtPayload {
     id: string
 }
 
-export const middleware = (req: Request & {userId: string} , res: Response, next: NextFunction) => {
+export const middleware = (req: Request & {userId?: string} , res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
