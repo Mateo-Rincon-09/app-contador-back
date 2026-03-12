@@ -1,2 +1,3 @@
-export * from './models/dto/login-user-dto'
-export * from './models/dto/register-user-dto'
+export * from './models/dto-auth/login-user-dto'
+export * from './models/dto-auth/register-user-dto'
+export * from './models/dto-movements/movimiento-dto'

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
+import { MovimientoRoutes } from "./movimiento/routes";
 
 
 export class AppRoutes {
@@ -7,7 +8,7 @@ export class AppRoutes {
         const router = Router();
 
         router.use('/auth', AuthRoutes.routes);
-    
+        router.use('/agregar', MovimientoRoutes.routes);
 
         return router;
     }
