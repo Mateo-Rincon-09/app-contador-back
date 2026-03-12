@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthRoutes } from "./auth/routes";
-import { MovimientoRoutes } from "./movimiento/routes";
+import { MovimientoRoutes } from "./movements/routes";
 
 
 export class AppRoutes {

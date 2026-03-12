@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MovimientoController } from './controller';
-import { middleware } from '../middleware/middleware';
+import { middleware } from '../middleware/movimiento-middleware';
 
 
 export class MovimientoRoutes {
