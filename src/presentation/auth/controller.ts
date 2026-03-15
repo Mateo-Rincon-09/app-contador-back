@@ -14,7 +14,8 @@ export class AuthController {
 
         try {
             const result = await this.service.register(registerUserDto as RegisterUserDto);
-            return res.status(201).json({ message: `Usuario registrado con exito`, user: { user: result.user, token: result.token } });
+            const { user, token } = result;
+            return res.status(201).json({ message: `Usuario registrado con exito`, user, token });
         } catch (error) {
             return res.status(400).json({ error: `${error}` });
         }
@@ -27,7 +28,8 @@ export class AuthController {
 
         try {
             const result = await this.service.login(loginUserDto as LoginUserDto);
-            return res.status(200).json({ message: `Usuario logueado con exito`, user: { user: result.user, token: result.token } });
+            const { user, token } = result
+            return res.status(200).json({ message: `Usuario logueado con exito`, user, token });
         } catch (error) {
             return res.status(400).json({ error: `${error}` });
         }

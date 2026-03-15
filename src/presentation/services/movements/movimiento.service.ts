@@ -12,7 +12,7 @@ export class MovimientoService {
                     montoGasto: movimientoDto.montoGasto,
                     categoria: movimientoDto.categoria,
                     descripcion: movimientoDto.descripcion,
-                    fecha: new Date(movimientoDto.fecha),
+                    fecha: movimientoDto.fecha,
                     user: {
                         connect:{id: userId}
                     }

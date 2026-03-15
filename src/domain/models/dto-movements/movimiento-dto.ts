@@ -6,7 +6,7 @@ export class MovimientoDto {
         public readonly montoGasto: number,
         public readonly categoria: string,
         public readonly descripcion: string,
-        public readonly fecha: string,
+        public readonly fecha: Date,
     ) { }
 
     static create(object: { [key: string]: any }): [string?, MovimientoDto?] {

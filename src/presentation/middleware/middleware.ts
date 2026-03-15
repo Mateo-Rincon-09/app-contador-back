@@ -13,12 +13,12 @@ export const middleware = (req: Request & {userId?: string} , res: Response, nex
         return res.status(400).json({ error: 'No token proveido' });
     }
 
-    const token = authHeader!.split(" ")[1];
+    const token = authHeader.split(" ")[1]?.replace(/"/g, "");
 
     try {
         const decoded = jwt.verify(token!, envs.SECRET_TOKEN!) as JwtPayload;
 
-        req.userId = decoded.id;
+        req.userId = decoded.id;        
 
         next();
     } catch (error) {

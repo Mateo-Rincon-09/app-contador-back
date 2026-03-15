@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MovimientoController } from './controller';
-import { middleware } from '../middleware/movimiento-middleware';
+import { middleware } from '../middleware/middleware';
 
 
 export class MovimientoRoutes {
@@ -9,7 +9,7 @@ export class MovimientoRoutes {
         const router = Router();
         const controller = new MovimientoController()
 
-        router.post('/movimiento', middleware, controller.enviarMovimiento)
+        router.post('/create', middleware, controller.enviarMovimiento)
 
         return router;
     }
