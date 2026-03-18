@@ -16,15 +16,25 @@ model User {
   createdAt DateTime @default(now())
 
   movimientos Movimiento[]
+  savings Saving[]
 }
 
 model Movimiento {
-  id           String @id @default(uuid())
+  id           String   @id @default(uuid())
   montoIngreso Float?
   montoGasto   Float?
   categoria    String
   descripcion  String
-  fecha        DateTime 
+  fecha        DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Saving {
+  id String @id @default(ulid())
+  montoMeta Float?
+  progreso Float?
 
   userId String
   user User @relation(fields: [userId], references: [id])
