@@ -56,7 +56,7 @@ export class MovimientoService {
             })
         ]);
         
-        //debe retornar con un IPaginationResponse
+        //debe retornar con un IPaginationResponse que contenga los items, totalItems, totalPages y currentPage
         const response: IPaginationResponse<MovimientoDto>  = new PaginationResponse<MovimientoDto>(pageSize);
         response.items = items.map((item: any) => MovimientoDto.create({
             montoIngreso: item.montoIngreso,
