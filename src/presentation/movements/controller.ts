@@ -9,8 +9,8 @@ interface AuthRequest extends Request {
 
 export interface MovementListRequest extends IPaginationRequest {
     userId?: string;
-
 }
+
 export class MovimientoController {
     private readonly service = new MovimientoService()
 

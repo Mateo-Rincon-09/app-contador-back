@@ -3,17 +3,15 @@
 export class SavingDto {
     private constructor(
         public readonly montoMeta: number,
-        public readonly agregarMonto?: number,
-        public readonly eliminarMonto?: number,
+        public readonly progreso?: number,
     ) { }
 
     static create(object: { [key: string]: any }): [string?, SavingDto?] {
-        const { montoMeta, agregarMonto, eliminarMonto } = object;
+        const { montoMeta, progreso } = object;
 
-        if (!montoMeta && montoMeta <= 0 ) return ['Tienes que agregar un valor para continuar'];
-        if ( agregarMonto <= 0 ) return ['El monto agregado no puede ser 0 o menor'];
-        if ( eliminarMonto <= 0 ) return ['El monto eliminado no puede ser 0 o menor'];
+        if (!montoMeta && montoMeta <= 0) return ['Tienes que agregar un valor para continuar'];
+        if (progreso <= 0) return ['El monto agregado no puede ser 0 o menor'];
 
-        return ["", new SavingDto(montoMeta, agregarMonto, eliminarMonto)]
+        return ["", new SavingDto(montoMeta, progreso)]
     }
 }
