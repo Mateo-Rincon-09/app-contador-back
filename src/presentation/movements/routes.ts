@@ -10,8 +10,6 @@ export class MovimientoRoutes {
         const controller = new MovimientoController()
 
         router.post('/create', middleware, controller.enviarMovimiento)
-        
-        //TODO: Ejemplo para obtener movimientos paginados, se pueden agregar filtros de fecha, tipo de movimiento, etc.
         router.post('/list', middleware, controller.listarMovimientos)
 
         return router;
