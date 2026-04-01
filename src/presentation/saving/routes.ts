@@ -7,9 +7,9 @@ export class SavingRoutes {
 
     static get routes(): Router {
         const router = Router();
-        const controller = new SavingController()
+        const controller = new SavingController();
 
-        router.post('/new', middleware, controller.enviarSaving)
+        router.post('/new', middleware, controller.enviarSaving);
 
         return router;
     }
