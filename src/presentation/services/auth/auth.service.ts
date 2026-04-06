@@ -6,7 +6,6 @@ import { JwtAdapter } from '../../../config/jwt.adapter';
 export class AuthService {
 	public async register(registerDto: RegisterUserDto) {
 		const hashed = await bcrypt.hash(registerDto.password, 10);
-		const hashedConfirm = await bcrypt.hash(registerDto.confirmPassword, 10);
 		try {
 			const user = await prisma.user.create({
 				data: {
@@ -14,7 +13,6 @@ export class AuthService {
 					lastName: registerDto.lastName,
 					email: registerDto.email,
 					password: hashed,
-					confirmPassword: hashedConfirm,
 				}
 			});
 			const token = await JwtAdapter.generateToken({ id: user.id });

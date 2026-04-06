@@ -4,17 +4,21 @@ import { SavingDto } from "../../../domain";
 
 
 export class SavingService {
-    public async enviarSaving(savingDto: SavingDto, userId: string) {
-        const mov = await prisma.saving.create({
+    public async createSaving(savingDto: SavingDto, userId: string) {
+        const saving = await prisma.saving.create({
             data: {
-                montoMeta: savingDto.montoMeta,
-                progreso: savingDto.progreso!,
+                amountExpected: savingDto.amountExpected,
+                amountProgress: savingDto.amountProgress!,
+                dateCreated: new Date(),
+                dateExpectedStart: savingDto.dateExpectedStart,
+                dateExpectedEnd: savingDto.dateExpectedEnd,
+                dateUpdated: savingDto.dateUpdated!,
                 user: {
                     connect: {id: userId} 
                 }
             }
         })
 
-        return mov
+        return saving;
     }
 }

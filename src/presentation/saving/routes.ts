@@ -9,7 +9,7 @@ export class SavingRoutes {
         const router = Router();
         const controller = new SavingController();
 
-        router.post('/new', middleware, controller.enviarSaving);
+        router.post('/new', middleware, controller.createSaving);
 
         return router;
     }

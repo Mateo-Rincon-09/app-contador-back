@@ -7,36 +7,59 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
+enum TransactionType {
+  income
+  expense
+  saving
+}
+
+model transaction {
+  id String @id @default(uuid())
+  amount Float
+  description String
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime
+  type TransactionType @default(expense)
+
+  //Relations
+  userId String
+  user user @relation(fields: [userId], references: [id])
+
+  categoryId String
+  category category @relation(fields: [categoryId], references: [id])
+}
+
+model category {
+  id String @id @default(uuid())
+  name String
+  
+  //Relations
+  transactions transaction[]
+}
+
+model user {
   id        String   @id @default(uuid())
   name      String
   lastName  String?
   email     String   @unique
   password  String
-  confirmPassword String
-  createdAt DateTime @default(now())
+  dateCreated DateTime @default(now())
 
-  movimientos Movimiento[]
-  savings Saving[]
+  transactions transaction[]
+  savings saving[]
 }
 
-model Movimiento {
-  id           String   @id @default(uuid())
-  montoIngreso Float?
-  montoGasto   Float?
-  categoria    String
-  descripcion  String
-  fecha        DateTime
+model saving {
+  id String @id @default(uuid())
+  amountExpected Float
+  amountProgress Float?
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime
+
+  dateExpectedStart DateTime
+  dateExpectedEnd DateTime
+
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
-}
-
-model Saving {
-  id String @id @default(ulid())
-  montoMeta Float?
-  progreso Float?
-
-  userId String
-  user User @relation(fields: [userId], references: [id])
-}
+  user user @relation(fields: [userId], references: [id])
+} 

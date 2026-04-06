@@ -10,13 +10,13 @@ export class SavingController {
   
     private readonly service = new SavingService();
 
-    enviarSaving = async (req: SavingRequest, res: Response) => {
-        const [ error, enviarSavingDto ] = SavingDto.create(req.body);
+    createSaving = async (req: SavingRequest, res: Response) => {
+        const [ error, createSavingDto ] = SavingDto.create(req.body);
 
         if (error) return res.status(400).json(error);
 
         try {
-            const resultado = await this.service.enviarSaving(enviarSavingDto!, req.userId!);
+            const resultado = await this.service.createSaving(createSavingDto!, req.userId!);
             return res.status(201).json({message: `Meta creada con exito ${resultado}`});
         } catch (error) {
             return res.status(500).json({error});
