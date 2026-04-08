@@ -3,7 +3,7 @@ import { SavingService } from "../services/saving/saving.service";
 import { SavingDto } from "../../domain/models/dto-saving/saving-dto";
 
 interface SavingRequest extends Request{
-    userId?: string
+    userId?: string;
 }
 
 export class SavingController {
@@ -16,8 +16,8 @@ export class SavingController {
         if (error) return res.status(400).json(error);
 
         try {
-            const resultado = await this.service.createSaving(createSavingDto!, req.userId!);
-            return res.status(201).json({message: `Meta creada con exito ${resultado}`});
+            const result = await this.service.createSaving(createSavingDto!, req.userId!);
+            return res.status(201).json({message: `Meta creada con exito ${result}`});
         } catch (error) {
             return res.status(500).json({error});
         }

@@ -13,53 +13,68 @@ enum TransactionType {
   saving
 }
 
-model transaction {
-  id String @id @default(uuid())
-  amount Float
-  description String
-  dateCreated DateTime @default(now())
-  dateUpdated DateTime
-  type TransactionType @default(expense)
-
-  //Relations
-  userId String
-  user user @relation(fields: [userId], references: [id])
-
-  categoryId String
-  category category @relation(fields: [categoryId], references: [id])
-}
-
-model category {
-  id String @id @default(uuid())
-  name String
-  
-  //Relations
-  transactions transaction[]
+ enum SavingType {
+  active
+  closed
+  deleted
 }
 
 model user {
-  id        String   @id @default(uuid())
-  name      String
-  lastName  String?
-  email     String   @unique
-  password  String
+  id          String   @id @default(uuid())
+  name        String
+  lastName    String?
+  email       String   @unique
+  password    String
   dateCreated DateTime @default(now())
 
   transactions transaction[]
-  savings saving[]
+  saving       saving[]
+  categories   category[]
+}
+
+model transaction {
+  id          String          @id @default(uuid())
+  amount      Float
+  description String
+  dateCreated DateTime        @default(now())
+  dateUpdated DateTime
+  type        TransactionType @default(expense)
+
+  //Relations
+  userId String
+  user   user   @relation(fields: [userId], references: [id])
+
+  categoryId String
+  category   category @relation(fields: [categoryId], references: [id])
+
+  savingId String?
+  saving   saving? @relation(fields: [savingId], references: [id])
+}
+
+model category {
+  id   String @id @default(uuid())
+  name String
+
+  //Relations
+  transactions transaction[]
+
+  userId String
+  user   user   @relation(fields: [userId], references: [id])
 }
 
 model saving {
-  id String @id @default(uuid())
-  amountExpected Float
+  id             String     @id @default(uuid())
+  amount         Float
   amountProgress Float?
-  dateCreated DateTime @default(now())
-  dateUpdated DateTime
+  dateCreated    DateTime   @default(now())
+  dateUpdated    DateTime?
+  dateStart      DateTime
+  dateEnd        DateTime
+  status         SavingType @default(active)
 
-  dateExpectedStart DateTime
-  dateExpectedEnd DateTime
-
+  //Relations
+  transactions transaction[]
 
   userId String
-  user user @relation(fields: [userId], references: [id])
-} 
+  user   user   @relation(fields: [userId], references: [id])
+}

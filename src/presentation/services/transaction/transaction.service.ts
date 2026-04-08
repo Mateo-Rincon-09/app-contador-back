@@ -13,7 +13,7 @@ export class TransactionService {
                    amount: transactionDto.amount,
                    description: transactionDto.description, 
                    dateCreated: new Date(), 
-                   dateUpdated: new Date(), 
+                   dateUpdated: transactionDto.dateUpdated!, 
                    user: {
                     connect: {id: userId}
                    }, 

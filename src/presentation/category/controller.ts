@@ -7,18 +7,18 @@ interface AuthRequest extends Request {
 }
 
 export class CategoryController {
-    private readonly service = new CategoryService()
+    private readonly service = new CategoryService();
 
     createCategory = async (req: AuthRequest, res: Response) => {
         const [error, createCategoryDto] = CategoryDto.create(req.body);
       
-        if (error) return res.status(400).json(error)
+        if (error) return res.status(400).json(error);
 
         try {
-            const resultado = await this.service.createCategory(createCategoryDto!, req.userId!)
-            return res.status(201).json({message: `Categoria enviada con exito ${resultado}`})
+            const result = await this.service.createCategory(createCategoryDto!, req.userId!);
+            return res.status(201).json({message: `Categoria enviada con exito ${result}`});
         } catch (error) {
-            return res.status(500).json({error})
+            return res.status(500).json({error});
         }
     }
 

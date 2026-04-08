@@ -5,7 +5,7 @@ import { AuthService } from "../services/auth/auth.service";
 
 export class AuthController {
 
-    private readonly service = new AuthService()
+    private readonly service = new AuthService();
 
     registerUser = async (req: Request, res: Response) => {
         const [error, registerUserDto] = RegisterUserDto.create(req.body);
@@ -28,7 +28,7 @@ export class AuthController {
 
         try {
             const result = await this.service.login(loginUserDto as LoginUserDto);
-            const { user, token } = result
+            const { user, token } = result;
             return res.status(200).json({ message: `Usuario logueado con exito`, user, token });
         } catch (error) {
             return res.status(400).json({ error: `${error}` });

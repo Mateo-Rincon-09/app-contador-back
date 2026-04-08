@@ -8,7 +8,7 @@ export class CategoryService {
             data: {
                 name: categoryDto.name,
                 user: {
-                    connect: { id: userId }
+                    connect: {id: userId}
                 }
             }
         })

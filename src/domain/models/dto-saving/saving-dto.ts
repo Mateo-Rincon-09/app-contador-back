@@ -1,23 +1,31 @@
+enum SavingType {
+    active = 'active',
+    closed = 'closed',
+    deleted = 'deleted'
+}
 
 
 export class SavingDto {
     private constructor(
-        public readonly amountExpected: number,
+        public readonly amount: number,
         public readonly dateCreated: Date,
-        public readonly dateExpectedStart: Date,
-        public readonly dateExpectedEnd: Date,
-        public readonly amountProgress?: number,
+        public readonly dateStart: Date,
+        public readonly dateEnd: Date,
+        public readonly status?: SavingType,
         public readonly dateUpdated?: Date,
+        public readonly amountProgress?: number,
     ) { }
 
     static create(object: { [key: string]: any }): [string?, SavingDto?] {
-        const { amountExpected, amountProgress, dateCreated, dateExpectedStart, dateExpectedEnd, dateUpdated } = object;
+        const { amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgess } = object;
 
-        if (!amountExpected && amountExpected <= 0) return ['Tienes que agregar un valor para continuar'];
+        if (!amount) return ['Tienes que agregar un valor para continuar'];
+        if (amount <= 0) return ['El monto no puede ser 0 o menor'];
         if (!dateCreated) return ['La fecha de creación es necesaria'];
-        if (!dateExpectedStart) return ['La fecha de inicio es necesaria'];
-        if (!dateExpectedEnd) return ['La fecha de fin es necesaria'];
+        if (!dateStart) return ['La fecha de inicio es necesaria'];
+        if (!dateEnd) return ['La fecha de fin es necesaria'];
+        if (amountProgess <= 0) return ['El monto agregado no puede ser 0 o menor'];
 
-        return ["", new SavingDto(amountExpected, amountProgress, dateCreated, dateExpectedStart, dateExpectedEnd, dateUpdated)]
+        return ["", new SavingDto(amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgess)]
     }
 }
