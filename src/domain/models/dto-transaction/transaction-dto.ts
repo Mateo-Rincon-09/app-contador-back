@@ -7,15 +7,15 @@ enum TransactionType {
 
 export class TransactionDto {
     private constructor(
+        public readonly type: TransactionType,
         public readonly amount: number,
         public readonly description: string,
         public readonly dateCreated: Date,
         public readonly dateUpdated?: Date,
-        public readonly type?: TransactionType,
     ) { }
 
     static create(object: { [key: string]: any }): [string?, TransactionDto?] {
-        const { amount, description, dateCreated, dateUpdated, type } = object;
+        const { type, amount, description, dateCreated, dateUpdated } = object;
 
         if (!amount) return ['El monto es necesario'];
         if (amount <= 0) return ['El monto del ingreso debe ser mayor a 0'];

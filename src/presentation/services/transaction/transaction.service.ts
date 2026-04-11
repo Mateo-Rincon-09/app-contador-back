@@ -5,27 +5,27 @@ import { TransactionListRequest } from "../../transaction/controller";
 
 
 export class TransactionService {
-    
-    public async createTransaction(transactionDto: TransactionDto , userId: string, categoryId: string) {
-        
-            const transaction = await prisma.transaction.create({
-                data: {
-                   amount: transactionDto.amount,
-                   description: transactionDto.description, 
-                   dateCreated: new Date(), 
-                   dateUpdated: transactionDto.dateUpdated!, 
-                   user: {
-                    connect: {id: userId}
-                   }, 
-                   category: {
-                    connect: {id: categoryId}
-                   },
-                   type: transactionDto.type!
-                }
-            });
 
-            return transaction;
-        
+    public async createTransaction(transactionDto: TransactionDto, userId: string, categoryId: string) {
+
+        const transaction = await prisma.transaction.create({
+            data: {
+                type: transactionDto.type,
+                amount: transactionDto.amount,
+                description: transactionDto.description,
+                dateCreated: new Date(),
+                dateUpdated: transactionDto.dateUpdated!,
+                user: {
+                    connect: { id: userId }
+                },
+                category: {
+                    connect: { id: categoryId }
+                },
+            }
+        });
+
+        return transaction;
+
     }
 
     public async listarMovimientos(request: TransactionListRequest) {
@@ -58,8 +58,8 @@ export class TransactionService {
                 orderBy: { dateCreated: 'desc' }
             })
         ]);
-        
-       const response: IPaginationResponse<TransactionDto>  = new PaginationResponse<TransactionDto>(pageSize);
+
+        const response: IPaginationResponse<TransactionDto> = new PaginationResponse<TransactionDto>(pageSize);
         response.items = items.map((item: any) => TransactionDto.create({
             amount: item.amount,
             description: item.description,
@@ -68,7 +68,7 @@ export class TransactionService {
             type: item.type
         })[1]!
         );
-        
+
         response.totalItems = totalItems;
         response.totalPages = Math.ceil(totalItems / pageSize);
         response.currentPage = currentPage;

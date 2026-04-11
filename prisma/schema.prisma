@@ -37,7 +37,7 @@ model transaction {
   amount      Float
   description String
   dateCreated DateTime        @default(now())
-  dateUpdated DateTime
+  dateUpdated DateTime?
   type        TransactionType @default(expense)
 
   //Relations

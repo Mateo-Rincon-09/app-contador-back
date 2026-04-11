@@ -21,8 +21,8 @@ export class TransactionController {
         if (error) return res.status(400).json(error)
 
         try {
-            const resultado = await this.service.createTransaction(createTransactionDto!, req.userId!, req.categoryId!);
-            return res.status(201).json({message: `Transacción enviada con exito ${resultado}`});
+            const result = await this.service.createTransaction(createTransactionDto!, req.userId!, req.categoryId!);
+            return res.status(201).json({message: `Transacción enviada con exito ${result}`});
         } catch (error) {
             return res.status(500).json({error})
         }
@@ -31,8 +31,8 @@ export class TransactionController {
     listarMovimientos = async (req: AuthRequest, res: Response) => {
         const body: TransactionListRequest = req.body;
         try {
-            const resultado = await this.service.listarMovimientos(body)
-            return res.status(200).json(resultado)
+            const result = await this.service.listarMovimientos(body)
+            return res.status(200).json(result)
         } catch (error) {
             return res.status(500).json({error})
         }

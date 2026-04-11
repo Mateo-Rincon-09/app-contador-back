@@ -22,7 +22,7 @@ CREATE TABLE "transaction" (
     "amount" DOUBLE PRECISION NOT NULL,
     "description" TEXT NOT NULL,
     "dateCreated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "dateUpdated" TIMESTAMP(3) NOT NULL,
+    "dateUpdated" TIMESTAMP(3),
     "type" "TransactionType" NOT NULL DEFAULT 'expense',
     "userId" TEXT NOT NULL,
     "categoryId" TEXT NOT NULL,
