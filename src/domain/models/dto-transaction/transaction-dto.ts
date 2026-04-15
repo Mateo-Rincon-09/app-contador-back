@@ -22,7 +22,7 @@ export class TransactionDto {
         if (!description) return ['La descripcion es necesaria'];
         if (!dateCreated) return ['La fecha es necesaria'];
 
-        return ["", new TransactionDto(amount, description, dateCreated, dateUpdated, type)];
+        return ["", new TransactionDto(type, amount, description, dateCreated, dateUpdated )];
     }
 
 }

@@ -11,9 +11,9 @@ export class AppRoutes {
 
         router.use('/auth', AuthRoutes.routes);
         router.use('/transaction', TransactionRoutes.routes);
-         router.use('/saving', SavingRoutes.routes);
+        router.use('/saving', SavingRoutes.routes);
         router.use('/category', CategoryRoutes.routes);
-        
+
         return router;
     }
 }

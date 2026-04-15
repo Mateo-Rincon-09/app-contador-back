@@ -25,7 +25,7 @@ CREATE TABLE "transaction" (
     "dateUpdated" TIMESTAMP(3),
     "type" "TransactionType" NOT NULL DEFAULT 'expense',
     "userId" TEXT NOT NULL,
-    "categoryId" TEXT NOT NULL,
+    "categoryId" TEXT,
     "savingId" TEXT,
 
     CONSTRAINT "transaction_pkey" PRIMARY KEY ("id")
@@ -35,6 +35,8 @@ CREATE TABLE "transaction" (
 CREATE TABLE "category" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "dateCreated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dateUpdated" TIMESTAMP(3),
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "category_pkey" PRIMARY KEY ("id")
@@ -62,7 +64,7 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transaction" ADD CONSTRAINT "transaction_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transaction" ADD CONSTRAINT "transaction_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_savingId_fkey" FOREIGN KEY ("savingId") REFERENCES "saving"("id") ON DELETE SET NULL ON UPDATE CASCADE;

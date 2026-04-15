@@ -44,8 +44,8 @@ model transaction {
   userId String
   user   user   @relation(fields: [userId], references: [id])
 
-  categoryId String
-  category   category @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  category   category? @relation(fields: [categoryId], references: [id])
 
   savingId String?
   saving   saving? @relation(fields: [savingId], references: [id])
@@ -54,6 +54,8 @@ model transaction {
 model category {
   id   String @id @default(uuid())
   name String
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime?
 
   //Relations
   transactions transaction[]

@@ -13,28 +13,28 @@ export interface TransactionListRequest extends IPaginationRequest {
 }
 
 export class TransactionController {
-    private readonly service = new TransactionService()
+    private readonly service = new TransactionService();
 
     createTransaction = async (req: AuthRequest, res: Response) => {
         const [error, createTransactionDto] = TransactionDto.create(req.body);
       
-        if (error) return res.status(400).json(error)
+        if (error) return res.status(400).json(error);
 
         try {
             const result = await this.service.createTransaction(createTransactionDto!, req.userId!, req.categoryId!);
             return res.status(201).json({message: `Transacción enviada con exito ${result}`});
         } catch (error) {
-            return res.status(500).json({error})
+            return res.status(500).json({error});
         }
     }
 
     listarMovimientos = async (req: AuthRequest, res: Response) => {
         const body: TransactionListRequest = req.body;
         try {
-            const result = await this.service.listarMovimientos(body)
-            return res.status(200).json(result)
+            const result = await this.service.listarMovimientos(body);
+            return res.status(200).json(result);
         } catch (error) {
-            return res.status(500).json({error})
+            return res.status(500).json({error});
         }
     }
 }

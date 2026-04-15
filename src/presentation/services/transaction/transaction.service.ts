@@ -18,9 +18,12 @@ export class TransactionService {
                 user: {
                     connect: { id: userId }
                 },
-                category: {
-                    connect: { id: categoryId }
-                },
+                ...(categoryId &&  {
+                    category: {
+
+                        connect: { id: categoryId }
+                    }
+                }),
             }
         });
 
