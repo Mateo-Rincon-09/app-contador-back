@@ -10,7 +10,7 @@ export class TransactionRoutes {
         const controller = new TransactionController();
 
         router.post('/create', middleware, controller.createTransaction);
-        router.post('/list', middleware, controller.listarMovimientos);
+        router.post('/list', middleware, controller.listTransaction);
 
         return router;
     }

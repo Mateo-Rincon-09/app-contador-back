@@ -28,10 +28,10 @@ export class TransactionController {
         }
     }
 
-    listarMovimientos = async (req: AuthRequest, res: Response) => {
+    listTransaction = async (req: AuthRequest, res: Response) => {
         const body: TransactionListRequest = req.body;
         try {
-            const result = await this.service.listarMovimientos(body);
+            const result = await this.service.listTransactions(body);
             return res.status(200).json(result);
         } catch (error) {
             return res.status(500).json({error});

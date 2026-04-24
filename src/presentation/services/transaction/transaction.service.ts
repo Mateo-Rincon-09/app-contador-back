@@ -31,7 +31,7 @@ export class TransactionService {
 
     }
 
-    public async listarMovimientos(request: TransactionListRequest) {
+    public async listTransactions(request: TransactionListRequest) {
         const { currentPage, pageSize, searchValue, dateRangeActive, dateStart, dateEnd } = request;
         const skip = (currentPage - 1) * pageSize;
         const where: any = {

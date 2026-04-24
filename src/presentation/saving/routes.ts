@@ -10,6 +10,7 @@ export class SavingRoutes {
         const controller = new SavingController();
 
         router.post('/new', middleware, controller.createSaving);
+        router.post('/list', middleware, controller.listSaving);
 
         return router;
     }

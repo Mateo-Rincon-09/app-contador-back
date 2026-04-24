@@ -10,6 +10,7 @@ export class CategoryRoutes {
         const controller = new CategoryController();
 
         router.post('/new', middleware, controller.createCategory);
+        router.post('/list', middleware, controller.listCategory);
 
         return router;
     }
