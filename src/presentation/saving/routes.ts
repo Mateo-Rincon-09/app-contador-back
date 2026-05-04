@@ -11,6 +11,7 @@ export class SavingRoutes {
 
         router.post('/new', middleware, controller.createSaving);
         router.post('/list', middleware, controller.listSaving);
+        router.delete('/delete/:savingId', middleware, controller.deleteSaving);
 
         return router;
     }

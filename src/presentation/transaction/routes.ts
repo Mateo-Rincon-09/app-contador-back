@@ -11,6 +11,7 @@ export class TransactionRoutes {
 
         router.post('/create', middleware, controller.createTransaction);
         router.post('/list', middleware, controller.listTransaction);
+        router.delete('/delete/:transactionId', middleware, controller.deleteTransaction);
 
         return router;
     }

@@ -50,7 +50,18 @@ export class AuthService {
 		};
 	}
 
-
+	public async updatePassword(userId: string, newPassword: string) {
+		const hashed = await bcrypt.hash(newPassword, 10);
+		try {
+			const updatedUser = await prisma.user.update({
+				where: { id: userId },
+				data: { password: hashed },
+			});
+			return updatedUser;
+		} catch (error) {
+			throw new Error('Error al actualizar contraseña');
+		}
+	}
 
 }
 

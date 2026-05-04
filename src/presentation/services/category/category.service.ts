@@ -10,6 +10,7 @@ export class CategoryService {
             data: {
                 name: categoryDto.name,
                 dateCreated: categoryDto.dateCreated,
+                status: 'active',
                 dateUpdated: categoryDto.dateUpdated!,
                 user: {
                     connect: { id: userId }
@@ -20,24 +21,50 @@ export class CategoryService {
         return category;
     }
 
+    public async deleteCategory(categoryId: string, userId: string,) {
+        const category = await prisma.category.findFirst({
+            where: {
+                id: categoryId,
+                userId: userId
+            }
+        });
+
+        if (!category) {
+            throw new Error('Categoria no encontrada');
+        }
+
+        await prisma.category.update({
+            where: { id: categoryId },
+            data: { status: 'deleted' }
+        });
+    }
+
     public async listCategory(request: CategoryListRequest) {
-        const { currentPage, pageSize, searchValue, dateRangeActive, dateStart, dateEnd } = request;
+        const { currentPage, pageSize, searchValue, dateCreated } = request;
         const skip = (currentPage - 1) * pageSize;
         const where: any = {
-            userId: request.userId
+            userId: request.userId,
+            status: 'active'
         };
 
         if (searchValue) {
-            where.OR = [
-                { descripcion: { contains: searchValue, mode: 'insensitive' } },
-                { categoria: { contains: searchValue, mode: 'insensitive' } }
-            ];
+            where.name = {
+                contains: searchValue,
+                mode: 'insensitive'
+            };
         }
 
-        if (dateRangeActive && dateStart && dateEnd) {
-            where.fecha = {
-                gte: new Date(dateStart),
-                lte: new Date(dateEnd)
+        if (dateCreated) {
+            const start = new Date(dateCreated);
+            const end = new Date(dateCreated);
+
+            start.setHours(0, 0, 0, 0);
+
+            end.setHours(23, 59, 59, 999);
+
+            where.dateCreated = {
+                gte: start,
+                lte: end
             };
         }
 
@@ -53,9 +80,10 @@ export class CategoryService {
 
         const response: IPaginationResponse<CategoryDto> = new PaginationResponse<CategoryDto>(pageSize);
         response.items = items.map((item: any) => CategoryDto.create({
-           name: item.name,
-           dateCreated: item.dateCreated,
-           dateUpdated: item.dateUpdated
+            id: item.id,
+            name: item.name,
+            dateCreated: item.dateCreated,
+            dateUpdated: item.dateUpdated
         })[1]!
         );
 

@@ -7,8 +7,8 @@ interface SavingRequest extends Request {
     userId?: string;
 }
 
-export interface SavingListRequest extends IPaginationRequest{
-    userId: string
+export interface SavingListRequest extends IPaginationRequest {
+    userId: string;
 }
 
 export class SavingController {
@@ -28,8 +28,23 @@ export class SavingController {
         }
     }
 
+    deleteSaving = async (req: SavingRequest, res: Response) => {
+
+        const savingId = req.params.savingId as string;
+
+        try {
+            await this.service.deleteSaving(savingId, req.userId!,);
+            return res.status(200).json({ message: 'Ahorro eliminado con exito' });
+        } catch (error) {
+            return res.status(500).json({ error });
+        }
+    }
+
     listSaving = async (req: SavingRequest, res: Response) => {
-        const body: SavingListRequest = req.body;
+        const body: SavingListRequest = {
+            ...req.body,
+            userId: req.userId!,
+        };
         try {
             const result = await this.service.listSavings(body);
             return res.status(200).json(result);

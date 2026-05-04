@@ -35,5 +35,16 @@ export class AuthController {
         }
     }
 
+    updatePassword = async (req: Request, res: Response) => {
+        const userId = req.params.id as string;
+        const { newPassword } = req.body;
+
+        try {
+            await this.service.updatePassword(userId, newPassword);
+            return res.status(200).json({ message: `Contraseña actualizada con exito` });
+        } catch (error) {
+            return res.status(400).json({ error: `${error}` });
+        }
+    }
 
 }

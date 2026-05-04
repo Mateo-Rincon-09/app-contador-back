@@ -1,10 +1,12 @@
 export interface IPaginationRequest {
+    currentPage: number;
+    pageSize: number;
+    dateCreated?: Date | string;
+    type?: string;
     searchValue?: string;
     dateRangeActive?: boolean;
     dateStart?: Date | string;
     dateEnd?: Date | string;
-    currentPage: number;
-    pageSize: number;
 };
 
 export interface IPaginationResponse<T> {

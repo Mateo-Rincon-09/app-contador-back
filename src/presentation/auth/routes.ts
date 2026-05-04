@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "./controller";
+import { middleware } from "../middleware/middleware";
 
 
 export class AuthRoutes {
@@ -10,7 +11,7 @@ export class AuthRoutes {
 
         router.post('/register', controller.registerUser);
         router.post('/login', controller.loginUser);
-        
+        router.put('/update-password/:id', middleware, controller.updatePassword);
 
         return router;
     }

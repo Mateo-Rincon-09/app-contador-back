@@ -13,7 +13,7 @@ enum TransactionType {
   saving
 }
 
- enum SavingType {
+enum StatusType {
   active
   closed
   deleted
@@ -39,6 +39,7 @@ model transaction {
   dateCreated DateTime        @default(now())
   dateUpdated DateTime?
   type        TransactionType @default(expense)
+  status      StatusType      @default(active)
 
   //Relations
   userId String
@@ -52,10 +53,11 @@ model transaction {
 }
 
 model category {
-  id   String @id @default(uuid())
-  name String
-  dateCreated DateTime @default(now())
+  id          String     @id @default(uuid())
+  name        String
+  dateCreated DateTime   @default(now())
   dateUpdated DateTime?
+  status      StatusType @default(active)
 
   //Relations
   transactions transaction[]
@@ -72,7 +74,7 @@ model saving {
   dateUpdated    DateTime?
   dateStart      DateTime
   dateEnd        DateTime
-  status         SavingType @default(active)
+  status         StatusType @default(active)
 
   //Relations
   transactions transaction[]

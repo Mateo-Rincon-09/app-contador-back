@@ -14,11 +14,12 @@ export class TransactionService {
                 amount: transactionDto.amount,
                 description: transactionDto.description,
                 dateCreated: new Date(),
+                status: 'active',
                 dateUpdated: transactionDto.dateUpdated!,
                 user: {
                     connect: { id: userId }
                 },
-                ...(categoryId &&  {
+                ...(categoryId && {
                     category: {
 
                         connect: { id: categoryId }
@@ -31,24 +32,55 @@ export class TransactionService {
 
     }
 
+    public async deleteTransaction(transactionId: string, userId: string,) {
+        const transaction = await prisma.transaction.findFirst({
+            where: {
+                id: transactionId,
+                userId: userId
+            }
+        });
+
+        if (!transaction) {
+            throw new Error('Transacción no encontrada');
+        }
+
+        await prisma.transaction.update({
+            where: { id: transactionId },
+            data: { status: 'deleted' }
+        });
+    }
+
     public async listTransactions(request: TransactionListRequest) {
-        const { currentPage, pageSize, searchValue, dateRangeActive, dateStart, dateEnd } = request;
+        const { currentPage, pageSize, searchValue, dateCreated, type } = request;
         const skip = (currentPage - 1) * pageSize;
         const where: any = {
-            userId: request.userId
+            userId: request.userId,
+            status: 'active'
         };
 
         if (searchValue) {
-            where.OR = [
-                { descripcion: { contains: searchValue, mode: 'insensitive' } },
-                { categoria: { contains: searchValue, mode: 'insensitive' } }
-            ];
+            where.description = {
+                contains: searchValue,
+                mode: 'insensitive'
+            };
         }
 
-        if (dateRangeActive && dateStart && dateEnd) {
-            where.fecha = {
-                gte: new Date(dateStart),
-                lte: new Date(dateEnd)
+        if (type) {
+            where.type = {
+                equals: type,
+            }
+        }
+
+        if (dateCreated) {
+            const start = new Date(dateCreated);
+            const end = new Date(dateCreated);
+
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+
+            where.dateCreated = {
+                gte: start,
+                lte: end
             };
         }
 
@@ -64,6 +96,7 @@ export class TransactionService {
 
         const response: IPaginationResponse<TransactionDto> = new PaginationResponse<TransactionDto>(pageSize);
         response.items = items.map((item: any) => TransactionDto.create({
+            id: item.id,
             amount: item.amount,
             description: item.description,
             dateCreated: item.dateCreated,

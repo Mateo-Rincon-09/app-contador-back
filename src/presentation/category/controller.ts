@@ -27,6 +27,18 @@ export class CategoryController {
         }
     }
 
+    deleteCategory = async (req: CategoryRequest, res: Response) => {
+
+        const categoryId = req.params.categoryId as string;
+
+        try {
+            await this.service.deleteCategory(categoryId, req.userId!,);
+            return res.status(200).json({ message: 'Categoria eliminada con exito' });
+        } catch (error) {
+            return res.status(500).json({ error });
+        }
+    }
+
     listCategory = async (req: CategoryRequest, res: Response) => {
         const body: CategoryListRequest = req.body;
         try {

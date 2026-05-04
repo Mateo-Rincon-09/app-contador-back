@@ -11,6 +11,7 @@ export class CategoryRoutes {
 
         router.post('/new', middleware, controller.createCategory);
         router.post('/list', middleware, controller.listCategory);
+        router.delete('/delete/:categoryId', middleware, controller.deleteCategory);
 
         return router;
     }

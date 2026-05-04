@@ -12,7 +12,7 @@ export class SavingService {
                 dateCreated: savingDto.dateCreated,
                 dateStart: savingDto.dateStart,
                 dateEnd: savingDto.dateEnd,
-                status: savingDto.status!,
+                status: 'active',
                 dateUpdated: savingDto.dateUpdated!,
                 amountProgress: savingDto.amountProgress!,
                 user: {
@@ -24,11 +24,30 @@ export class SavingService {
         return saving;
     }
 
+    public async deleteSaving(savingId: string, userId: string,) {
+        const saving = await prisma.saving.findFirst({
+            where: {
+                id: savingId,
+                userId: userId
+            }
+        });
+
+        if (!saving) {
+            throw new Error('Ahorro no encontrado');
+        }
+
+        await prisma.saving.update({
+            where: { id: savingId },
+            data: { status: 'deleted' }
+        });
+    }
+
     public async listSavings(request: SavingListRequest) {
-        const { currentPage, pageSize, searchValue, dateRangeActive, dateStart, dateEnd } = request;
+        const { currentPage, pageSize, searchValue, dateCreated, dateRangeActive, dateStart, dateEnd } = request;
         const skip = (currentPage - 1) * pageSize;
         const where: any = {
-            userId: request.userId
+            userId: request.userId,
+            status: 'active'
         };
 
         if (searchValue) {
@@ -38,13 +57,20 @@ export class SavingService {
             ];
         }
 
-        if (dateRangeActive && dateStart && dateEnd) {
-            where.fecha = {
-                gte: new Date(dateStart),
-                lte: new Date(dateEnd)
+        if (dateRangeActive && dateCreated) {
+            const start = new Date(dateCreated);
+            const end = new Date(dateCreated);
+
+            start.setHours(0, 0, 0, 0);
+
+            end.setHours(23, 59, 59, 999);
+
+            where.dateCreated = {
+                gte: start,
+                lte: end
             };
         }
-
+        
         const [totalItems, items] = await prisma.$transaction([
             prisma.saving.count({ where }),
             prisma.saving.findMany({
@@ -57,6 +83,7 @@ export class SavingService {
 
         const response: IPaginationResponse<SavingDto> = new PaginationResponse<SavingDto>(pageSize);
         response.items = items.map((item: any) => SavingDto.create({
+            id: item.id,
             amount: item.amount,
             dateCreated: item.dateCreated,
             dateStart: item.dateStart,
