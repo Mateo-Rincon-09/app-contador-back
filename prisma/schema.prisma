@@ -45,8 +45,8 @@ model transaction {
   userId String
   user   user   @relation(fields: [userId], references: [id])
 
-  categoryId String?
-  category   category? @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   category @relation(fields: [categoryId], references: [id])
 
   savingId String?
   saving   saving? @relation(fields: [savingId], references: [id])
