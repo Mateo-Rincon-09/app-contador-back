@@ -8,7 +8,7 @@ interface CategoryRequest extends Request {
 }
 
 export interface CategoryListRequest extends IPaginationRequest {
-    userId: string
+    userId?: string
 }
 
 export class CategoryController {
@@ -40,7 +40,10 @@ export class CategoryController {
     }
 
     listCategory = async (req: CategoryRequest, res: Response) => {
-        const body: CategoryListRequest = req.body;
+        const body: CategoryListRequest = {
+            ...req.body,
+            userId: req.userId!
+        };
         try {
             const result = await this.service.listCategory(body);
             return res.status(200).json(result);

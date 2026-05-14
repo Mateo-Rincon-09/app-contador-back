@@ -11,6 +11,7 @@ export class AuthRoutes {
 
         router.post('/register', controller.registerUser);
         router.post('/login', controller.loginUser);
+        router.post('/google', controller.loginGoogle);
         router.put('/update-password/:id', middleware, controller.updatePassword);
 
         return router;

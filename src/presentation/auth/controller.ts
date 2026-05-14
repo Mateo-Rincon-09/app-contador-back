@@ -35,6 +35,31 @@ export class AuthController {
         }
     }
 
+    loginGoogle = async (req: Request, res: Response) => {
+
+        const { token } = req.body;
+
+        if (!token) {
+            return res.status(400).json({error: 'Token requerido'});
+        }
+
+        try {
+            const result = await this.service.loginGoogle(token);
+            const { user, token: jwtToken } = result;
+
+            return res.status(200).json({
+                message: 'Login Google exitoso',
+                user,
+                token: jwtToken,
+            });
+
+        } catch (error) {
+            return res.status(400).json({
+                error: `${error}`
+            });
+        }
+    }
+
     updatePassword = async (req: Request, res: Response) => {
         const userId = req.params.id as string;
         const { newPassword } = req.body;

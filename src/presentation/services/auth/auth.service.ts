@@ -2,6 +2,7 @@ import { prisma } from '../../../config/prisma';
 import bcrypt from 'bcrypt';
 import { LoginUserDto, RegisterUserDto } from '../../../domain';
 import { JwtAdapter } from '../../../config/jwt.adapter';
+import admin from '../../../config/firebaseAdmin';
 
 export class AuthService {
 	public async register(registerDto: RegisterUserDto) {
@@ -47,6 +48,45 @@ export class AuthService {
 		return {
 			user: user,
 			token: token,
+		};
+	}
+
+	public async loginGoogle(firebaseToken: string) {
+		const decodedToken = await admin.auth().verifyIdToken(firebaseToken);
+
+		const email = decodedToken.email;
+
+		if (!email) {
+			throw new Error('Email no encontrado');
+		};
+
+		let user = await prisma.user.findUnique({
+			where: {
+				email
+			}
+		});
+
+		if (!user) {
+			user = await prisma.user.create({
+				data: {
+					email,
+					name: decodedToken.name || '',
+					password: ''
+				}
+			})
+		};
+
+		const token = await JwtAdapter.generateToken({
+			id: user.id
+		});
+
+		if (!token) {
+			throw new Error('Error al generar token');
+		}
+
+		return {
+			user,
+			token,
 		};
 	}
 

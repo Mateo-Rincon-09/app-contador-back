@@ -41,7 +41,10 @@ export class TransactionController {
     }
 
     listTransaction = async (req: AuthRequest, res: Response) => {
-        const body: TransactionListRequest = req.body;
+        const body: TransactionListRequest = {
+            ...req.body,
+            userId: req.userId!
+        };
         try {
             const result = await this.service.listTransactions(body);
             return res.status(200).json(result);
