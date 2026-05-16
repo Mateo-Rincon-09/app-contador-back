@@ -21,7 +21,6 @@ export class SavingDto {
         if (!dateCreated) return ['La fecha de creación es necesaria'];
         if (!dateStart) return ['La fecha de inicio es necesaria'];
         if (!dateEnd) return ['La fecha de fin es necesaria'];
-        if (amountProgess <= 0) return ['El monto agregado no puede ser 0 o menor'];
 
         return ["", new SavingDto(id, amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgess)]
     }

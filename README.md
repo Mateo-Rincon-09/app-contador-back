@@ -6,137 +6,222 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Aplicación backend moderna y escalable para el control financiero, construida con Node.js, TypeScript y Prisma. Diseñada siguiendo principios de Domain-Driven Design (DDD) para gestionar autenticación de usuarios, categorías, ahorros y transacciones con eficiencia.
+Backend moderno para control financiero, construido con Node.js, TypeScript y Prisma. Soporta autenticación, gestión de categorías, metas de ahorro, transacciones y login con Firebase.
 
-## 🚀 Funcionalidades
+## 🚀 Funcionalidades principales
 
-- **Autenticación de usuarios**: Sistema seguro con JWT
-- **Gestión de categorías**: Organiza gastos e ingresos con categorías personalizables
-- **Seguimiento de ahorros**: Controla y administra metas de ahorro
-- **Gestión de transacciones**: Registra y analiza movimientos financieros
-- **API RESTful**: Endpoints claros y bien estructurados
-- **Integración con base de datos**: Prisma ORM sobre PostgreSQL
-- **Soporte Docker**: Despliegue en contenedores para un entorno consistente
-- **TypeScript**: Implementación completamente tipada para mayor confiabilidad
+- Registro y login de usuarios con JWT
+- Login con Google mediante token Firebase
+- Actualización segura de contraseña
+- Gestión de categorías con creación, listado y eliminación lógica
+- Gestión de metas de ahorro con creación, listado y eliminación lógica
+- Gestión de transacciones con creación, listado y eliminación lógica
+- Vínculo opcional de transacciones a ahorros para actualizar progreso
+- Filtros y paginación en listados
+- API REST protegida con middleware JWT
+- Base de datos PostgreSQL con Prisma
+- Contenerización con Docker Compose
 
 ## 🛠️ Stack Tecnológico
 
-- **Backend**: Node.js con Express.js
-- **Lenguaje**: TypeScript
-- **Base de datos**: PostgreSQL con Prisma ORM
-- **Autenticación**: JWT (JSON Web Tokens)
-- **Contenerización**: Docker y Docker Compose
-- **Arquitectura**: Domain-Driven Design (DDD)
+- Node.js
+- TypeScript
+- Express
+- Prisma
+- PostgreSQL
+- JWT
+- Firebase Admin
+- Docker / Docker Compose
 
 ## 📦 Instalación
 
-### Requisitos previos
+### Requisitos
 
-- Node.js (v18 o superior)
-- Docker y Docker Compose
-- npm o yarn
+- Node.js 18+
+- npm
+- PostgreSQL o Docker
+- Docker Compose (opcional)
 
-### Configuración
-
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/Mateo-Rincon-09/app-contador-back.git
-   cd app-contador-back
-   ```
-
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Configurar variables de entorno**
-   ```bash
-   copy .env.template .env
-   # Completa las variables de entorno en .env
-   ```
-
-4. **Configurar la base de datos**
-   ```bash
-   # Generar cliente de Prisma
-   npx prisma generate
-
-   # Ejecutar migraciones
-   npx prisma migrate dev
-   ```
-
-5. **Opcional: iniciar con Docker**
-   ```bash
-   docker-compose up -d
-   ```
-
-## 🏃‍♂️ Uso
-
-### Desarrollo
+### Pasos
 
 ```bash
-# Iniciar servidor en modo desarrollo
+git clone https://github.com/Mateo-Rincon-09/app-contador-back.git
+cd app-contador-back
+npm install
+```
+
+### Variables de entorno
+
+Copia el archivo de ejemplo y completa las variables:
+
+```bash
+copy .env.template .env
+```
+
+Variables necesarias:
+
+- `PORT`
+- `SECRET_TOKEN`
+- `DATABASE_URL`
+
+### Base de datos
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+### Con Docker
+
+```bash
+docker-compose up -d
+```
+
+## 🏃‍♂️ Comandos
+
+```bash
 npm run dev
-
-# Compilar para producción
 npm run build
-
-# Iniciar servidor en producción
 npm start
 ```
 
-### Endpoints principales
+## 🔑 Autenticación
 
-La API ofrece los siguientes endpoints principales:
+Todas las rutas protegidas requieren el header:
 
-- **Autenticación**: `/auth/login`, `/auth/register`
-- **Categorías**: `/categories`
-- **Ahorros**: `/savings`
-- **Transacciones**: `/transactions`
+```
+Authorization: Bearer <token>
+```
 
-Para más detalles sobre la API, utiliza una herramienta como Postman o Insomnia para explorar los endpoints.
+## 📚 API REST
+
+### Auth
+
+- `POST /auth/register`
+  - body: `{ name, lastName, email, password }`
+  - respuesta: usuario creado + token JWT
+
+- `POST /auth/login`
+  - body: `{ email, password }`
+  - respuesta: usuario + token JWT
+
+- `POST /auth/google`
+  - body: `{ token }`
+  - descripción: inicia sesión con un token Firebase ID y crea el usuario si no existe.
+
+- `PUT /auth/update-password/:id`
+  - body: `{ newPassword }`
+  - descripción: actualiza la contraseña del usuario especificado.
+
+### Categorías
+
+- `POST /category/new`
+  - protegida
+  - body: `{ name, dateCreated, status? }`
+  - crea una categoría nueva para el usuario autenticado.
+
+- `GET /category/:userId`
+  - protegida
+  - devuelve todas las categorías activas de un usuario.
+
+- `POST /category/list`
+  - protegida
+  - body: `{ currentPage, pageSize, searchValue?, dateCreated? }`
+  - devuelve resultados paginados y filtrados.
+
+- `DELETE /category/delete/:categoryId`
+  - protegida
+  - marca la categoría como `deleted`.
+
+### Ahorros
+
+- `POST /saving/new`
+  - protegida
+  - body: `{ amount, dateCreated, dateStart, dateEnd, status?, amountProgress? }`
+  - crea una meta de ahorro vinculada al usuario autenticado.
+
+- `POST /saving/list`
+  - protegida
+  - body: `{ currentPage, pageSize, searchValue?, dateCreated?, dateRangeActive?, dateStart?, dateEnd? }`
+  - devuelve ahorros activos con filtros de búsqueda y fecha.
+
+- `DELETE /saving/delete/:savingId`
+  - protegida
+  - marca el ahorro como `deleted`.
+
+### Transacciones
+
+- `POST /transaction/create`
+  - protegida
+  - body: `{ type, amount, description, dateCreated, categoryId, savingId? }`
+  - crea una transacción y, si se incluye `savingId`, actualiza el progreso del ahorro asociado.
+
+- `POST /transaction/list`
+  - protegida
+  - body: `{ currentPage, pageSize, searchValue?, dateCreated?, type? }`
+  - devuelve transacciones activas paginadas y filtradas.
+
+- `DELETE /transaction/delete/:transactionId`
+  - protegida
+  - marca la transacción como `deleted`.
+
+## 🧠 Comportamiento adicional
+
+- Los listados usan paginación con `currentPage` y `pageSize`.
+- El filtro de `dateCreated` aplica el rango completo del día.
+- Las búsquedas en categorías, ahorros y transacciones son insensibles a mayúsculas.
+- Las eliminaciones son suaves (`status: deleted`) para preservar el historial.
+- Las transacciones con `savingId` actualizan el progreso del ahorro asociado.
 
 ## 🏗️ Estructura del proyecto
 
 ```
 src/
-├── app.ts                 # Punto de entrada de la aplicación
-├── config/                # Archivos de configuración
-│   ├── envs.ts           # Variables de entorno
-│   ├── jwt.adapter.ts    # Utilidades JWT
-│   ├── pagination.ts     # Helpers de paginación
-│   └── prisma.ts         # Cliente de Prisma
-├── domain/               # Capa de dominio (DDD)
-│   ├── models/           # DTOs y modelos de dominio
-│   ├── generated/        # Tipos generados por Prisma
-│   └── enum/             # Enumeraciones de la aplicación
-└── presentation/         # Capa de presentación
-    ├── routes.ts         # Rutas principales
-    ├── server.ts         # Configuración del servidor
-    ├── auth/             # Módulo de autenticación
-    ├── category/         # Módulo de categorías
-    ├── saving/           # Módulo de ahorros
-    ├── transaction/      # Módulo de transacciones
-    └── middleware/       # Middlewares personalizados
+├── app.ts
+├── config/
+│   ├── envs.ts
+│   ├── firebaseAdmin.ts
+│   ├── jwt.adapter.ts
+│   ├── pagination.ts
+│   └── prisma.ts
+├── domain/
+│   ├── models/
+│   │   ├── dto-auth/
+│   │   ├── dto-category/
+│   │   ├── dto-saving/
+│   │   └── dto-transaction/
+│   ├── generated/
+│   └── enum/
+└── presentation/
+    ├── auth/
+    ├── category/
+    ├── saving/
+    ├── transaction/
+    ├── middleware/
+    ├── routes.ts
+    └── server.ts
 ```
+
+## 🐳 Docker
+
+El proyecto incluye un servicio PostgreSQL en `docker-compose.yml`:
+
+- `postgres` en el puerto `5432`
+- usuario: `postgres`
+- contraseña: `123456`
+- base de datos: `app_contador`
 
 ## 🤝 Contribuciones
 
-Las contribuciones son bienvenidas. Sigue estos pasos:
-
 1. Haz un fork del repositorio
 2. Crea una rama de función (`git checkout -b feature/mi-mejora`)
-3. Realiza tus cambios (`git commit -m 'Describe tu cambio'`)
-4. Sube la rama (`git push origin feature/mi-mejora`)
+3. Realiza tus cambios
+4. Sube la rama
 5. Abre un Pull Request
 
 ## 📄 Licencia
 
-Este proyecto está licenciado bajo MIT. Revisa el archivo [LICENSE](LICENSE) para más detalles.
-
-## 👨‍💻 Autor
-
-**Mateo Rincón**
-- GitHub: [@Mateo-Rincon-09](https://github.com/Mateo-Rincon-09)
+MIT
 
 ---
 
