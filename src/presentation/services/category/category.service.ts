@@ -93,4 +93,22 @@ export class CategoryService {
         return response;
 
     }
+
+    public async getAllCategories(userId: string) {
+        const items = await prisma.category.findMany({
+            where: {
+                userId,
+                status: 'active'
+            },
+            orderBy: { dateCreated: 'desc' }
+        });
+
+        return items.map((item: any) => CategoryDto.create({
+            id: item.id,
+            name: item.name,
+            dateCreated: item.dateCreated,
+            status: item.status,
+            dateUpdated: item.dateUpdated
+        })[1]!);
+    }
 }

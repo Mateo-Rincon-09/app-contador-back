@@ -10,6 +10,7 @@ export class CategoryRoutes {
         const controller = new CategoryController();
 
         router.post('/new', middleware, controller.createCategory);
+        router.get('/:userId', middleware, controller.getAllCategories);
         router.post('/list', middleware, controller.listCategory);
         router.delete('/delete/:categoryId', middleware, controller.deleteCategory);
 

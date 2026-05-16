@@ -52,4 +52,17 @@ export class CategoryController {
         }
     }
 
+    getAllCategories = async (req: CategoryRequest, res: Response) => {
+        try {
+            const userId = req.params.userId as string;
+
+            if(!userId) return res.status(400).json({message: "Parametro no encontrado"})
+
+            const result = await this.service.getAllCategories(userId);
+            return res.status(200).json(result);
+        } catch (error) {
+            return res.status(500).json({ error });
+        }
+    }
+
 }

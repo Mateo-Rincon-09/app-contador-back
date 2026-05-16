@@ -2,11 +2,16 @@ import { IPaginationResponse, PaginationResponse } from "../../../config/paginat
 import { prisma } from "../../../config/prisma";
 import { TransactionDto } from "../../../domain";
 import { TransactionListRequest } from "../../transaction/controller";
+import { SavingService } from '../saving/saving.service';
 
 
 export class TransactionService {
 
-    public async createTransaction(transactionDto: TransactionDto, userId: string, categoryId: string) {
+    constructor(
+        private readonly savingService: SavingService
+    ) {}
+
+    public async createTransaction(transactionDto: TransactionDto, userId: string) {
 
         const transaction = await prisma.transaction.create({
             data: {
@@ -19,14 +24,23 @@ export class TransactionService {
                 user: {
                     connect: { id: userId }
                 },
-                ...(categoryId && {
-                    category: {
+                category: {
+                    connect: { id: transactionDto.categoryId }
+                },
 
-                        connect: { id: categoryId }
+                ...(transactionDto.savingId && {
+                    saving: {
+                        connect: { id: transactionDto.savingId }
                     }
                 }),
             }
         });
+
+        if (transaction && transaction.savingId) {
+            //mandar a actualizar el saving con el nuevo valor de la transaccion
+            //mandar el savingId y el amount
+            this.savingService.updateSavingProgress(transaction.savingId, transaction.amount);
+        }
 
         return transaction;
 
@@ -101,7 +115,8 @@ export class TransactionService {
             description: item.description,
             dateCreated: item.dateCreated,
             dateUpdated: item.dateUpdated,
-            type: item.type
+            type: item.type,
+            categoryId: item.categoryId,
         })[1]!
         );
 

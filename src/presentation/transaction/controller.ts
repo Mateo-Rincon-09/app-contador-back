@@ -13,7 +13,11 @@ export interface TransactionListRequest extends IPaginationRequest {
 }
 
 export class TransactionController {
-    private readonly service = new TransactionService();
+
+    constructor(
+        private transactionService: TransactionService,
+    ){}
+
 
     createTransaction = async (req: AuthRequest, res: Response) => {
         const [error, createTransactionDto] = TransactionDto.create(req.body);
@@ -21,7 +25,7 @@ export class TransactionController {
         if (error) return res.status(400).json(error);
 
         try {
-            const result = await this.service.createTransaction(createTransactionDto!, req.userId!, req.categoryId!);
+            const result = await this.transactionService.createTransaction(createTransactionDto!, req.userId!);
             return res.status(201).json({ message: `Transacción enviada con exito ${result}` });
         } catch (error) {
             return res.status(500).json({ error });
@@ -33,7 +37,7 @@ export class TransactionController {
         const transactionId = req.params.transactionId as string;
 
         try {
-            await this.service.deleteTransaction(transactionId, req.userId!,);
+            await this.transactionService.deleteTransaction(transactionId, req.userId!,);
             return res.status(200).json({ message: 'Transacción eliminada con exito' });
         } catch (error) {
             return res.status(500).json({ error });
@@ -46,7 +50,7 @@ export class TransactionController {
             userId: req.userId!
         };
         try {
-            const result = await this.service.listTransactions(body);
+            const result = await this.transactionService.listTransactions(body);
             return res.status(200).json(result);
         } catch (error) {
             return res.status(500).json({ error });

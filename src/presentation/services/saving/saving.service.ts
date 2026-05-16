@@ -24,6 +24,26 @@ export class SavingService {
         return saving;
     }
 
+    public async updateSavingProgress(savingId: string, amount: number) {
+        try {
+            const saving = await prisma.saving.update({
+                where: {
+                    id: savingId,
+                },
+                data: {
+                    amountProgress: {
+                        increment: amount
+                    },
+                    dateUpdated: new Date()
+                }
+            })
+            return saving;
+
+        } catch (error) {
+            throw new Error('Ahorro no encontrado');
+        }
+    }
+
     public async deleteSaving(savingId: string, userId: string,) {
         const saving = await prisma.saving.findFirst({
             where: {
@@ -70,7 +90,7 @@ export class SavingService {
                 lte: end
             };
         }
-        
+
         const [totalItems, items] = await prisma.$transaction([
             prisma.saving.count({ where }),
             prisma.saving.findMany({
