@@ -14,7 +14,7 @@ export class SavingService {
                 dateEnd: savingDto.dateEnd,
                 status: 'active',
                 dateUpdated: savingDto.dateUpdated!,
-                amountProgress: savingDto.amountProgress!,
+                amountProgress: savingDto.amountProgress || 0,
                 user: {
                     connect: { id: userId }
                 }

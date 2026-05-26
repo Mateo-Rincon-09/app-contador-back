@@ -22,7 +22,7 @@ export class TransactionDto {
         if (amount <= 0) return ['El monto del ingreso debe ser mayor a 0'];
         if (!description) return ['La descripcion es necesaria'];
         if (!dateCreated) return ['La fecha es necesaria'];
-        if(!categoryId) return ["Category es necesaria"]
+        if(!categoryId) return ["Categoria es necesaria"]
 
         return ["", new TransactionDto(id, type, amount, description, dateCreated, status, categoryId, dateUpdated, savingId)];
     }

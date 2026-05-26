@@ -37,9 +37,7 @@ export class TransactionService {
         });
 
         if (transaction && transaction.savingId) {
-            //mandar a actualizar el saving con el nuevo valor de la transaccion
-            //mandar el savingId y el amount
-            this.savingService.updateSavingProgress(transaction.savingId, transaction.amount);
+            await this.savingService.updateSavingProgress(transaction.savingId, transaction.amount);
         }
 
         return transaction;

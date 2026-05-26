@@ -14,7 +14,7 @@ export class SavingDto {
     ) { }
 
     static create(object: { [key: string]: any }): [string?, SavingDto?] {
-        const { id, amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgess } = object;
+        const { id, amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgress } = object;
 
         if (!amount) return ['Tienes que agregar un valor para continuar'];
         if (amount <= 0) return ['El monto no puede ser 0 o menor'];
@@ -22,6 +22,6 @@ export class SavingDto {
         if (!dateStart) return ['La fecha de inicio es necesaria'];
         if (!dateEnd) return ['La fecha de fin es necesaria'];
 
-        return ["", new SavingDto(id, amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgess)]
+        return ["", new SavingDto(id, amount, dateCreated, dateStart, dateEnd, status, dateUpdated, amountProgress)]
     }
 }
