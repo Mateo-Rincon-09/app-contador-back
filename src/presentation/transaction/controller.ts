@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { TransactionService } from "../services/transaction/transaction.service";
 import { TransactionDto } from "../../domain";
 import { IPaginationRequest } from "../../config/pagination";
+import { TransactionType } from "../../generated/prisma/enums";
 
 interface AuthRequest extends Request {
     userId?: string;
@@ -10,13 +11,15 @@ interface AuthRequest extends Request {
 
 export interface TransactionListRequest extends IPaginationRequest {
     userId?: string;
+    type?: TransactionType;
+    savingId?: string;
 }
 
 export class TransactionController {
 
     constructor(
         private transactionService: TransactionService,
-    ){}
+    ) { }
 
 
     createTransaction = async (req: AuthRequest, res: Response) => {
@@ -27,6 +30,24 @@ export class TransactionController {
         try {
             const result = await this.transactionService.createTransaction(createTransactionDto!, req.userId!);
             return res.status(201).json({ message: `Transacción enviada con exito ${result}` });
+        } catch (error) {
+            return res.status(500).json({ error });
+        }
+    }
+
+    getSummaryByUser = async (req: AuthRequest, res: Response) => {
+        try {
+
+            const { startDate, endDate } = req.query;
+
+            const summary = await this.transactionService.getSummaryByUser(
+                req.userId!,
+                startDate ? new Date(startDate as string) : undefined,
+                endDate ? new Date(endDate as string) : undefined
+            );
+
+            return res.status(200).json(summary);
+
         } catch (error) {
             return res.status(500).json({ error });
         }
