@@ -1,11 +1,13 @@
 import admin from "firebase-admin";
+import { envs } from "./envs";
 
-import serviceAccount from "./firebase-service-account.json";
+const rawServiceAccount = envs.FIREBASE_SERVICE_ACCOUNT.trim();
+const normalizedServiceAccount = rawServiceAccount.replace(/\r?\n/g, "\\n");
+
+const serviceAccount = JSON.parse(normalizedServiceAccount) as admin.ServiceAccount;
 
 admin.initializeApp({
-    credential: admin.credential.cert(
-        serviceAccount as admin.ServiceAccount
-    ),
+    credential: admin.credential.cert(serviceAccount),
 });
 
 export default admin;

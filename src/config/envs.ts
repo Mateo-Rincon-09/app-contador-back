@@ -5,5 +5,6 @@ export const envs = {
     PORT: get('PORT').required().asPortNumber(),
     SECRET_TOKEN: get('SECRET_TOKEN').required().asString(),
     DATABASE_URL: get('DATABASE_URL').required().asString(),
+    FIREBASE_SERVICE_ACCOUNT: get('FIREBASE_SERVICE_ACCOUNT').required().asString(),
 }
 

@@ -63,6 +63,9 @@ Variables necesarias:
 - `PORT`
 - `SECRET_TOKEN`
 - `DATABASE_URL`
+- `FIREBASE_SERVICE_ACCOUNT`
+
+`FIREBASE_SERVICE_ACCOUNT` debe contener todo el JSON de la cuenta de servicio en una sola línea, con los saltos de línea del `private_key` como `\n`.
 
 ### Base de datos
 
