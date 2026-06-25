@@ -1,0 +1,50 @@
+import { mailer } from '../../../config/mailer';
+import { envs } from '../../../config/envs';
+import { verifyEmailTemplate } from '../templates/verify-email.template';
+
+interface SendEmailOptions {
+    to: string;
+    subject: string;
+    html: string;
+}
+
+export class EmailService {
+
+    async sendEmail(options: SendEmailOptions): Promise<boolean> {
+
+        const { to, subject, html } = options;
+
+        try {
+
+            await mailer.sendMail({
+                from: `"Fintra" <${envs.MAIL_USER}>`,
+                to,
+                subject,
+                html,
+            });
+
+            return true;
+
+        } catch (error) {
+
+            console.error(error);
+
+            return false;
+        }
+    }
+
+
+    async sendVerificationEmail(email: string, name: string, token: string): Promise<boolean> {
+
+        const verificationUrl = `${envs.FRONTEND_URL}/verify-email?token=${token}`;
+
+        return this.sendEmail({
+            to: email,
+            subject: 'Verifica tu correo',
+            html: verifyEmailTemplate(
+                name,
+                verificationUrl
+            )
+        });
+    }
+}

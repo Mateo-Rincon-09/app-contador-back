@@ -13,6 +13,8 @@ export class AuthRoutes {
         router.post('/login', controller.loginUser);
         router.post('/google', controller.loginGoogle);
         router.put('/update-password/:id', middleware, controller.updatePassword);
+        router.get('/test-email', controller.testEmail);
+        router.get('/verify-email', controller.verifyEmail);
 
         return router;
     }

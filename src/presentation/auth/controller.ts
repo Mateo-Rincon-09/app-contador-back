@@ -7,6 +7,39 @@ export class AuthController {
 
     private readonly service = new AuthService();
 
+    testEmail = async (req: Request, res: Response) => {
+
+        try {
+
+            const result = await this.service.testEmail();
+
+            return res.status(200).json(result);
+
+        } catch (error) {
+
+            return res.status(500).json({
+                error: `${error}`
+            });
+        }
+    }
+
+    verifyEmail = async (req: Request, res: Response) => {
+
+        const token = req.query.token as string;
+
+        if (!token) {
+            return res.status(400).json({ error: 'Token requerido' });
+        }
+
+        try {
+            const result = await this.service.verifyEmail(token);
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({ error: `${error}` });
+        }
+    }
+
     registerUser = async (req: Request, res: Response) => {
         const [error, registerUserDto] = RegisterUserDto.create(req.body);
 
@@ -14,8 +47,8 @@ export class AuthController {
 
         try {
             const result = await this.service.register(registerUserDto as RegisterUserDto);
-            const { user, token } = result;
-            return res.status(201).json({ message: `Usuario registrado con exito`, user, token });
+
+            return res.status(201).json({ message: `Usuario registrado con exito`, result });
         } catch (error) {
             return res.status(400).json({ error: `${error}` });
         }
@@ -40,7 +73,7 @@ export class AuthController {
         const { token } = req.body;
 
         if (!token) {
-            return res.status(400).json({error: 'Token requerido'});
+            return res.status(400).json({ error: 'Token requerido' });
         }
 
         try {

@@ -4,6 +4,9 @@ CREATE TYPE "TransactionType" AS ENUM ('income', 'expense', 'saving');
 -- CreateEnum
 CREATE TYPE "StatusType" AS ENUM ('active', 'closed', 'deleted');
 
+-- CreateEnum
+CREATE TYPE "TokenType" AS ENUM ('EMAIL_VERIFICATION', 'PASSWORD_RESET');
+
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
@@ -11,9 +14,23 @@ CREATE TABLE "user" (
     "lastName" TEXT,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "dateCreated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "token" (
+    "id" TEXT NOT NULL,
+    "tokenHash" TEXT NOT NULL,
+    "type" "TokenType" NOT NULL,
+    "used" BOOLEAN NOT NULL DEFAULT false,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "token_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -61,6 +78,12 @@ CREATE TABLE "saving" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "token_tokenHash_key" ON "token"("tokenHash");
+
+-- AddForeignKey
+ALTER TABLE "token" ADD CONSTRAINT "token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
