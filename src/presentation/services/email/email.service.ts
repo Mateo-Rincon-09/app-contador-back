@@ -1,6 +1,7 @@
 import { mailer } from '../../../config/mailer';
 import { envs } from '../../../config/envs';
 import { verifyEmailTemplate } from '../templates/verify-email.template';
+import { welcomeEmailTemplate } from '../templates/welcome.template';
 
 interface SendEmailOptions {
     to: string;
@@ -26,13 +27,10 @@ export class EmailService {
             return true;
 
         } catch (error) {
-
             console.error(error);
-
             return false;
         }
     }
-
 
     async sendVerificationEmail(email: string, name: string, token: string): Promise<boolean> {
 
@@ -46,5 +44,15 @@ export class EmailService {
                 verificationUrl
             )
         });
+    }
+
+    async sendWelcomeEmail(email: string, name: string): Promise<boolean> {
+
+        return this.sendEmail({
+            to: email,
+            subject: '¡Bienvenido a Fintra!',
+            html: welcomeEmailTemplate(name)
+        });
+
     }
 }

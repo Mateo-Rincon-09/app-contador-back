@@ -45,7 +45,7 @@ export class AuthService {
 			throw new Error('Token inválido o expirado');
 		}
 
-		await prisma.user.update({
+		const user = await prisma.user.update({
 			where: {
 				id: tokenData.userId
 			},
@@ -55,6 +55,8 @@ export class AuthService {
 		});
 
 		await this.tokenService.markAsUsed(tokenData.id);
+
+		await this.emailService.sendWelcomeEmail(user.email, user.name);
 
 		return {
 			message: 'Correo verificado correctamente'
@@ -151,7 +153,8 @@ export class AuthService {
 				data: {
 					email,
 					name: decodedToken.name || '',
-					password: ''
+					password: '',
+					emailVerified: true,
 				}
 			})
 		};
