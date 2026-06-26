@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LoginUserDto, RegisterUserDto } from "../../domain";
+import { LoginUserDto, RegisterUserDto, ResendVerificationDto } from "../../domain";
 import { AuthService } from "../services/auth/auth.service";
 
 
@@ -38,6 +38,24 @@ export class AuthController {
         } catch (error) {
             return res.status(400).json({ error: `${error}` });
         }
+    }
+
+    resendVerification = async (req: Request, res: Response) => {
+
+        const [error, dto] = ResendVerificationDto.create(req.body);
+
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        try {
+            const result = await this.service.resendVerification(dto!);
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({ error: `${error}`});
+        }
+
     }
 
     registerUser = async (req: Request, res: Response) => {

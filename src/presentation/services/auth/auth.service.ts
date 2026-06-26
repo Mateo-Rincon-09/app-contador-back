@@ -1,10 +1,10 @@
 import { prisma } from '../../../config/prisma';
-import bcrypt from 'bcrypt';
-import { LoginUserDto, RegisterUserDto } from '../../../domain';
+import { LoginUserDto, RegisterUserDto, ResendVerificationDto } from '../../../domain';
 import { JwtAdapter } from '../../../config/jwt.adapter';
 import { EmailService } from '../email/email.service';
 import { TokenType } from '../../../generated/prisma/client';
 import { TokenService } from '../token/token.service';
+import bcrypt from 'bcrypt';
 import admin from '../../../config/firebaseAdmin';
 
 export class AuthService {
@@ -61,6 +61,44 @@ export class AuthService {
 		return {
 			message: 'Correo verificado correctamente'
 		};
+	}
+
+	public async resendVerification(dto: ResendVerificationDto) {
+
+		const user = await prisma.user.findUnique({
+			where: {
+				email: dto.email
+			}
+		});
+
+		if (!user) {
+			throw new Error('Usuario no encontrado');
+		}
+
+		if (user.emailVerified) {
+			throw new Error('El correo ya fue verificado');
+		}
+
+		const verificationToken = await this.tokenService.createToken(
+			user.id,
+			TokenType.EMAIL_VERIFICATION,
+			60 * 24
+		);
+
+		const emailSent = await this.emailService.sendVerificationEmail(
+			user.email,
+			user.name,
+			verificationToken
+		);
+
+		if (!emailSent) {
+			throw new Error('No se pudo enviar el correo');
+		}
+
+		return {
+			message: 'Se envió un nuevo correo de verificación'
+		};
+
 	}
 
 	public async register(registerDto: RegisterUserDto) {
