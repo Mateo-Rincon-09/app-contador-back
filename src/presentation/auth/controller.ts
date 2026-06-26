@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LoginUserDto, RegisterUserDto, ResendVerificationDto } from "../../domain";
+import { LoginUserDto, RegisterUserDto, ResendVerificationDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from "../../domain";
 import { AuthService } from "../services/auth/auth.service";
 
 
@@ -53,7 +53,7 @@ export class AuthController {
             return res.status(200).json(result);
 
         } catch (error) {
-            return res.status(400).json({ error: `${error}`});
+            return res.status(400).json({ error: `${error}` });
         }
 
     }
@@ -111,16 +111,75 @@ export class AuthController {
         }
     }
 
-    updatePassword = async (req: Request, res: Response) => {
-        const userId = req.params.id as string;
-        const { newPassword } = req.body;
+
+    forgotPassword = async (req: Request, res: Response) => {
+
+        const [error, dto] = ForgotPasswordDto.create(req.body);
+
+        if (error) {
+            return res.status(400).json({ error });
+        }
 
         try {
-            await this.service.updatePassword(userId, newPassword);
-            return res.status(200).json({ message: `Contraseña actualizada con exito` });
+            const result = await this.service.forgotPassword(dto!);
+            return res.status(200).json(result);
         } catch (error) {
             return res.status(400).json({ error: `${error}` });
         }
+
+    }
+
+    resetPassword = async (req: Request, res: Response) => {
+
+        const [error, dto] = ResetPasswordDto.create(req.body);
+
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        try {
+            const result = await this.service.resetPassword(dto!);
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({ error: `${error}` });
+        }
+
+    }
+
+    validateResetToken = async (req: Request, res: Response) => {
+
+        const token = req.query.token as string;
+
+        if (!token) {
+            return res.status(400).json({ error: "Token requerido" });
+        }
+
+        try {
+            const result = await this.service.validateResetToken(token);
+            return res.json(result);
+        } catch (error) {
+            return res.status(400).json({ error: `${error}` });
+        }
+
+    }
+
+    changePassword = async (req: Request & { userId?: string }, res: Response) => {
+
+        const [error, dto] = ChangePasswordDto.create(req.body);
+
+        if (error) {
+            return res.status(400).json({ error });
+        }
+
+        try {
+            const result = await this.service.changePassword(req.userId!, dto!);
+            return res.status(200).json(result);
+
+        } catch (error) {
+            return res.status(400).json({ error: `${error}` });
+        }
+
     }
 
 }

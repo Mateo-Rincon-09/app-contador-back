@@ -2,6 +2,8 @@ import { mailer } from '../../../config/mailer';
 import { envs } from '../../../config/envs';
 import { verifyEmailTemplate } from '../templates/verify-email.template';
 import { welcomeEmailTemplate } from '../templates/welcome.template';
+import { resetPasswordTemplate } from '../templates/reset-password.template';
+import { passwordChangedTemplate } from '../templates/password-changed.template';
 
 interface SendEmailOptions {
     to: string;
@@ -52,6 +54,31 @@ export class EmailService {
             to: email,
             subject: '¡Bienvenido a Fintra!',
             html: welcomeEmailTemplate(name)
+        });
+
+    }
+
+    async sendResetPasswordEmail(email: string, name: string, token: string) {
+
+        const url = `${envs.FRONTEND_URL}/reset-password?token=${token}`;
+
+        return this.sendEmail({
+            to: email,
+            subject: "Restablecer contraseña",
+            html: resetPasswordTemplate(
+                name,
+                url
+            )
+        });
+
+    }
+
+    async sendPasswordChangedEmail(email: string, name: string) {
+
+        return this.sendEmail({
+            to: email,
+            subject: "Contraseña actualizada",
+            html: passwordChangedTemplate(name)
         });
 
     }

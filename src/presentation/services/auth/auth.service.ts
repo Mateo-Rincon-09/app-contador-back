@@ -1,5 +1,5 @@
 import { prisma } from '../../../config/prisma';
-import { LoginUserDto, RegisterUserDto, ResendVerificationDto } from '../../../domain';
+import { ChangePasswordDto, ForgotPasswordDto, LoginUserDto, RegisterUserDto, ResendVerificationDto, ResetPasswordDto } from '../../../domain';
 import { JwtAdapter } from '../../../config/jwt.adapter';
 import { EmailService } from '../email/email.service';
 import { TokenType } from '../../../generated/prisma/client';
@@ -153,14 +153,14 @@ export class AuthService {
 		const user = await prisma.user.findUnique({
 			where: { email: loginDto.email }
 		});
-		if (!user) throw new Error('Usuario no encontrado');
+		if (!user) throw new Error('Usuario o contraseña incorrectas');
 
 		if (!user.emailVerified) {
 			throw new Error('Debes verificar tu correo antes de iniciar sesión');
 		}
 
 		const isMatch = await bcrypt.compare(loginDto.password, user.password);
-		if (!isMatch) throw new Error('Contraseña incorrecta');
+		if (!isMatch) throw new Error('Usuario o contraseña incorrectas');
 
 		const token = await JwtAdapter.generateToken({ id: user.id });
 		if (!token) throw new Error('Error al generar token');
@@ -211,19 +211,141 @@ export class AuthService {
 		};
 	}
 
-	public async updatePassword(userId: string, newPassword: string) {
-		const hashed = await bcrypt.hash(newPassword, 10);
-		try {
-			const updatedUser = await prisma.user.update({
-				where: { id: userId },
-				data: { password: hashed },
-			});
-			return updatedUser;
-		} catch (error) {
-			throw new Error('Error al actualizar contraseña');
+
+	public async forgotPassword(dto: ForgotPasswordDto) {
+
+		const user = await prisma.user.findUnique({
+			where: {
+				email: dto.email
+			}
+		});
+
+		if (!user?.emailVerified) {
+			return {
+				message:
+					"Si existe una cuenta asociada a este correo, recibirás un enlace para restablecer tu contraseña."
+			};
 		}
+
+		if (!user) {
+			return {
+				message:
+					"Si existe una cuenta asociada a este correo, recibirás un enlace para restablecer tu contraseña."
+			};
+		}
+
+		const token = await this.tokenService.createToken(
+			user.id,
+			TokenType.PASSWORD_RESET,
+			30
+		);
+
+		await this.emailService.sendResetPasswordEmail(
+			user.email,
+			user.name,
+			token
+		);
+
+		return {
+			message:
+				"Si existe una cuenta asociada a este correo, recibirás un enlace para restablecer tu contraseña."
+		};
+
+	}
+
+	public async resetPassword(dto: ResetPasswordDto) {
+
+		const tokenData = await this.tokenService.validateToken(
+			dto.token,
+			TokenType.PASSWORD_RESET
+		);
+
+		if (!tokenData) {
+			throw new Error("Token inválido o expirado");
+		}
+
+		const hashed = await bcrypt.hash(dto.password, 10);
+
+		await prisma.user.update({
+			where: {
+				id: tokenData.userId
+			},
+			data: {
+				password: hashed
+			}
+		});
+
+		await this.tokenService.markAsUsed(tokenData.id);
+
+		await this.emailService.sendPasswordChangedEmail(
+			tokenData.user.email,
+			tokenData.user.name
+		);
+
+		return {
+			message: "Contraseña actualizada correctamente"
+		};
+
+	}
+
+	public async validateResetToken(token: string) {
+
+		const tokenData = await this.tokenService.validateToken(
+			token,
+			TokenType.PASSWORD_RESET
+		);
+
+		if (!tokenData) {
+			throw new Error("Token inválido o expirado");
+		}
+
+		return {
+			message: "Token válido"
+		};
+	}
+
+	public async changePassword(userId: string, dto: ChangePasswordDto) {
+
+		const user = await prisma.user.findUnique({
+			where: {
+				id: userId
+			}
+		});
+
+		if (!user) {
+			throw new Error("Usuario no encontrado");
+		}
+
+		const isMatch = await bcrypt.compare(dto.currentPassword, user.password);
+
+		if (!isMatch) {
+			throw new Error("La contraseña actual es incorrecta");
+		}
+
+		const hashed = await bcrypt.hash(
+			dto.newPassword,
+			10
+		);
+
+		await prisma.user.update({
+			where: {
+				id: userId
+			},
+			data: {
+				password: hashed
+			}
+		});
+
+		await this.emailService.sendPasswordChangedEmail(
+			user.email,
+			user.name
+		);
+
+		return {
+			message:
+				"Contraseña actualizada correctamente"
+		};
+
 	}
 
 }
-
-

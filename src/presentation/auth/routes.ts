@@ -12,8 +12,15 @@ export class AuthRoutes {
         router.post('/register', controller.registerUser);
         router.post('/login', controller.loginUser);
         router.post('/google', controller.loginGoogle);
+
         router.post('/resend-verification', controller.resendVerification);
-        router.put('/update-password/:id', middleware, controller.updatePassword);
+
+        router.post('/forgot-password', controller.forgotPassword);
+        router.post('/reset-password', controller.resetPassword);
+        router.get("/validate-reset-token", controller.validateResetToken);
+
+        router.put("/change-password", middleware, controller.changePassword);
+
         router.get('/test-email', controller.testEmail);
         router.get('/verify-email', controller.verifyEmail);
 
