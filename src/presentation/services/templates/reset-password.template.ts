@@ -1,54 +1,34 @@
+import { emailBody } from "./email-body";
+
 export const resetPasswordTemplate = (name: string, url: string) => {
 
-    return `
-    <div style="
-        font-family: Arial, sans-serif;
-        max-width:600px;
-        margin:auto;
-        padding:30px;
-        background:#ffffff;
-        border-radius:12px;
-        border:1px solid #e5e7eb;
-    ">
-
-        <h2 style="color:#2563eb">
-            Hola ${name}
-        </h2>
+    return emailBody(`
+        <h2>Hola ${name}</h2>
 
         <p>
-            Hemos recibido una solicitud para restablecer tu contraseña.
+            Recibimos una solicitud para restablecer tu contraseña.
         </p>
 
-        <p>
-            Si fuiste tú, presiona el siguiente botón:
-        </p>
-
-        <div style="margin:30px 0;text-align:center">
-
-            <a
-                href="${url}"
-                style="
-                    background:#2563eb;
-                    color:white;
-                    padding:14px 28px;
-                    text-decoration:none;
-                    border-radius:8px;
-                    font-weight:bold;
-                "
-            >
+        <div style="text-align:center;margin:30px 0">
+            <a href="${url}" style="
+                background:#dc2626;
+                color:white;
+                padding:12px 20px;
+                border-radius:8px;
+                text-decoration:none;
+                font-weight:bold;
+                display:inline-block;
+            ">
                 Restablecer contraseña
             </a>
-
         </div>
 
-        <p>
+        <p style="font-size:12px;color:#666">
             Este enlace expirará en 30 minutos.
         </p>
 
-        <p>
-            Si no solicitaste este cambio puedes ignorar este correo.
+        <p style="font-size:12px;color:#666">
+            Si no fuiste tú, puedes ignorar este correo.
         </p>
-
-    </div>
-    `;
+    `);
 };

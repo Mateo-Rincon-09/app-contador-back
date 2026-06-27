@@ -1,30 +1,35 @@
+import { emailBody } from "./email-body";
+
 export const welcomeEmailTemplate = (name: string) => {
-    return `
-        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
 
-            <h1 style="color:#2563eb;">
-                ¡Bienvenido a Fintra!
-            </h1>
+    return emailBody(`
+        <h2>¡Bienvenido a Fintra, ${name}! 🚀</h2>
 
-            <p>
-                Hola <strong>${name}</strong>,
-            </p>
+        <p>
+            Tu cuenta ya está activa.
+        </p>
 
-            <p>
-                Tu correo ha sido verificado correctamente.
-            </p>
+        <p>Ahora puedes:</p>
 
-            <p>
-                Ya puedes iniciar sesión y comenzar a administrar
-                tus finanzas.
-            </p>
+        <ul>
+            <li>📊 Registrar ingresos y gastos</li>
+            <li>💰 Crear metas de ahorro</li>
+            <li>📈 Ver estadísticas financieras</li>
+            <li>🎯 Controlar tu progreso</li>
+        </ul>
 
-            <hr>
-
-            <p style="color:#666;">
-                Gracias por confiar en Fintra.
-            </p>
-
+        <div style="text-align:center;margin:30px 0">
+            <a href="${process.env.FRONTEND_URL}" style="
+                background:#16a34a;
+                color:white;
+                padding:12px 20px;
+                border-radius:8px;
+                text-decoration:none;
+                font-weight:bold;
+                display:inline-block;
+            ">
+                Ir a Fintra
+            </a>
         </div>
-    `;
+    `);
 };

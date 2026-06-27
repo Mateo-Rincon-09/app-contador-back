@@ -1,38 +1,34 @@
-export const verifyEmailTemplate = (
-    name: string,
-    verificationUrl: string
-) => {
-    return `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1>Verifica tu correo</h1>
+import { emailBody } from "./email-body";
 
-            <p>Hola ${name},</p>
+export const verifyEmailTemplate = (name: string, url: string) => {
 
-            <p>
-                Gracias por registrarte en Fintra.
-            </p>
+    return emailBody(`
+        <h2>Hola ${name}, 👋</h2>
 
-            <p>
-                Haz clic en el siguiente botón para verificar tu correo:
-            </p>
+        <p>
+            Gracias por registrarte en <b>Fintra</b>.
+        </p>
 
-            <a
-                href="${verificationUrl}"
-                style="
-                    display:inline-block;
-                    padding:12px 20px;
-                    background:#2563eb;
-                    color:white;
-                    text-decoration:none;
-                    border-radius:6px;
-                "
-            >
-                Verificar correo
+        <p>
+            Para activar tu cuenta, por favor verifica tu correo.
+        </p>
+
+        <div style="text-align:center;margin:30px 0">
+            <a href="${url}" style="
+                background:#16a34a;
+                color:white;
+                padding:12px 20px;
+                border-radius:8px;
+                text-decoration:none;
+                font-weight:bold;
+                display:inline-block;
+            ">
+                Verificar cuenta
             </a>
-
-            <p>
-                Este enlace expirará en 24 horas.
-            </p>
         </div>
-    `;
+
+        <p style="font-size:12px;color:#666">
+            Este enlace expirará en 24 horas por seguridad.
+        </p>
+    `);
 };
